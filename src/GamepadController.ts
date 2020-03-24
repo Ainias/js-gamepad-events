@@ -118,7 +118,7 @@ export class GamepadController {
         this.pollButtons();
         this.pollAxes();
 
-        this._animationFrame = requestAnimationFrame(this._loop);
+        this._animationFrame = requestAnimationFrame(() => this._loop);
     }
 
     //Specific listener functions
