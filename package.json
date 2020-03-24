@@ -1,0 +1,18 @@
+{
+  "name": "js-gamepad-events",
+  "displayName": "Gamepad Events",
+  "version": "0.0.1",
+  "main": "dist/client.js",
+  "scripts": {
+    "build": "node bin/build.js && tsc && cd ./src && find . -regextype sed -regex '.*\\.\\(html\\|png\\|svg\\|json\\)' -type f -exec cp --parents {} ../dist \\;"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.3.2"
+  },
+  "devDependencies": {
+    "js-helper": "git+https://github.com/Ainias/js-helper#0.3.2",
+    "@types/node": "^12.12.14",
+    "typescript": "^3.7.2"
+  }
+}
