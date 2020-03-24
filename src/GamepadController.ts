@@ -9,6 +9,7 @@ export class GamepadController {
     static _axesValues: any = {};
 
     static _listener: any = {};
+    static _listenerMaxId: any = {};
 
     static _animationFrame;
 
@@ -19,7 +20,9 @@ export class GamepadController {
         }
 
         this._listener[event] = Helper.nonNull(this._listener[event], {});
-        let id = Object.keys(this._listener[event]).length;
+        this._listenerMaxId[event] = Helper.nonNull(this._listenerMaxId[event], 0);
+        this._listenerMaxId[event]++;
+        let id = this._listenerMaxId[event];
         this._listener[event][id] = listener;
         return id;
     }
@@ -80,12 +83,10 @@ export class GamepadController {
         this._loop();
     }
 
-
     static getGamepads(): any {
         // @ts-ignore
         return Object.values(this._gamepads);
     }
-
 
     //Poll Functions
     static pollButtons() {
@@ -129,14 +130,14 @@ export class GamepadController {
                 }
             }
         };
-        this.on(event, realListener);
+        return this.on(event, realListener);
     }
 
     static addButtonListener(listener, gamepadIndex?, buttonIndex?){
-        this.addButtonAxisListener("buttonchange", listener, gamepadIndex, buttonIndex);
+        return this.addButtonAxisListener("buttonchange", listener, gamepadIndex, buttonIndex);
     }
     static addAxisListener(listener, gamepadIndex?, axisIndex?){
-        this.addButtonAxisListener("axischange", listener, gamepadIndex, axisIndex);
+        return this.addButtonAxisListener("axischange", listener, gamepadIndex, axisIndex);
     }
 
     static addButtonDownListener(listener, gamepadIndex?, buttonIndex?){
@@ -146,7 +147,7 @@ export class GamepadController {
             }
         };
 
-        this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
+        return this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
     }
 
     static addButtonUpListener(listener, gamepadIndex?, buttonIndex?){
@@ -156,7 +157,7 @@ export class GamepadController {
             }
         };
 
-        this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
+        return this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
     }
 
 }
