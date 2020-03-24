@@ -30,6 +30,9 @@ class GamepadController {
         }
     }
     static _addGamepad(gamepad) {
+        if (Helper_1.Helper.isNull(gamepad)) {
+            return;
+        }
         let index = gamepad.index;
         this._gamepads[index] = gamepad;
         this._buttonValues[index] = {};
