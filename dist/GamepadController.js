@@ -66,7 +66,7 @@ class GamepadController {
     }
     //Poll Functions
     static pollButtons() {
-        this._gamepads.forEach(gamepad => {
+        this.getGamepads().forEach(gamepad => {
             gamepad.buttons.forEach((button, index) => {
                 let previousButtonValue = this._buttonValues[gamepad.index][index];
                 if (button.value !== previousButtonValue) {
@@ -77,7 +77,7 @@ class GamepadController {
         });
     }
     static pollAxes() {
-        this._gamepads.forEach(gamepad => {
+        this.getGamepads().forEach(gamepad => {
             gamepad.axes.forEach((axisValue, index) => {
                 let previousAxisValue = this._axesValues[gamepad.index][index];
                 if (axisValue !== previousAxisValue) {
