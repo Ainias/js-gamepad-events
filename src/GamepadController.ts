@@ -45,6 +45,10 @@ export class GamepadController {
     }
 
     static _addGamepad(gamepad){
+        if (Helper.isNull(gamepad)){
+            return;
+        }
+
         let index = gamepad.index;
         this._gamepads[index] = gamepad;
 
