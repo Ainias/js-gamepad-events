@@ -9,6 +9,7 @@ export declare class GamepadController {
     static on(event: any, listener: any): any;
     static off(event: any, listenerId: any): boolean;
     static _trigger(event: any, ...args: any[]): void;
+    static _addGamepad(gamepad: any): void;
     static init(): void;
     static getGamepads(): any;
     static pollButtons(): void;

@@ -44,25 +44,25 @@ export class GamepadController {
         }
     }
 
+    static _addGamepad(gamepad){
+        let index = gamepad.index;
+        this._gamepads[index] = gamepad;
+
+        this._buttonValues[index] = {};
+        gamepad.buttons.forEach((button, buttonIndex) => {
+            this._buttonValues[index][buttonIndex] = button.value;
+        });
+        this._axesValues[index] = {};
+        gamepad.axes.forEach((axisValue, axisIndex) => {
+            this._axesValues[index][axisIndex] = axisValue;
+        });
+    }
 
     //Init function
     static init() {
         window.addEventListener("gamepadconnected", e => {
             // @ts-ignore
-            let index = e.gamepad.index;
-            // @ts-ignore
-            this._gamepads[index] = e.gamepad;
-
-            this._buttonValues[index] = {};
-            // @ts-ignore
-            e.gamepad.buttons.forEach((button, buttonIndex) => {
-                this._buttonValues[index][buttonIndex] = button.value;
-            });
-            this._axesValues[index] = {};
-            // @ts-ignore
-            e.gamepad.axes.forEach((axisValue, axisIndex) => {
-                this._axesValues[index][axisIndex] = axisValue;
-            });
+            this._addGamepad(e.gamepad);
 
             // @ts-ignore
             this._trigger("connect", e.gamepad, e);
@@ -78,6 +78,11 @@ export class GamepadController {
             // @ts-ignore
             this._trigger("disconnect", e.gamepad, e);
         });
+
+        let gamepads = navigator.getGamepads();
+        for(let i = 0; i < gamepads.length; i++){
+            this._addGamepad(gamepads[i]);
+        }
 
         //starting of the loop
         this._loop();
