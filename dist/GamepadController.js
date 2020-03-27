@@ -56,9 +56,9 @@ class GamepadController {
             // @ts-ignore
             delete this._gamepads[e.gamepad.index];
             // @ts-ignore
-            delete this._buttonValues[e.gamepad.index];
+            // delete this._buttonValues[e.gamepad.index];
             // @ts-ignore
-            delete this._axesValues[e.gamepad.index];
+            // delete this._axesValues[e.gamepad.index];
             // @ts-ignore
             this._trigger("disconnect", e.gamepad, e);
         });
@@ -70,13 +70,20 @@ class GamepadController {
         this._loop();
     }
     static getGamepads() {
-        // @ts-ignore
-        return Object.values(this._gamepads);
+        let gamepadArray = [];
+        let gamepads = navigator.getGamepads();
+        for (let i = 0; i < gamepads.length; i++) {
+            if (gamepads[i]) {
+                gamepadArray.push(gamepads[i]);
+            }
+        }
+        return gamepadArray;
     }
     //Poll Functions
     static pollButtons() {
         this.getGamepads().forEach(gamepad => {
             gamepad.buttons.forEach((button, index) => {
+                this._buttonValues[gamepad.index] = Helper_1.Helper.nonNull(this._buttonValues[gamepad.index], {});
                 let previousButtonValue = this._buttonValues[gamepad.index][index];
                 if (button.value !== previousButtonValue) {
                     this._trigger("buttonchange", gamepad, index, button.value, previousButtonValue, button);
@@ -88,10 +95,11 @@ class GamepadController {
     static pollAxes() {
         this.getGamepads().forEach(gamepad => {
             gamepad.axes.forEach((axisValue, index) => {
+                this._axesValues[gamepad.index] = Helper_1.Helper.nonNull(this._axesValues[gamepad.index], {});
                 let previousAxisValue = this._axesValues[gamepad.index][index];
                 if (axisValue !== previousAxisValue) {
                     this._trigger("axischange", gamepad, index, axisValue, previousAxisValue);
-                    this._buttonValues[gamepad.index][index] = axisValue;
+                    this._axesValues[gamepad.index][index] = axisValue;
                 }
             });
         });
@@ -100,7 +108,7 @@ class GamepadController {
     static _loop() {
         this.pollButtons();
         this.pollAxes();
-        this._animationFrame = requestAnimationFrame(() => this._loop);
+        this._animationFrame = requestAnimationFrame(() => this._loop());
     }
     //Specific listener functions
     static addButtonAxisListener(event, listener, gamepadIndex, buttonIndex) {
@@ -121,7 +129,6 @@ class GamepadController {
     }
     static addButtonDownListener(listener, gamepadIndex, buttonIndex) {
         let realListener = function (gamepad, index, value, oldValue, button) {
-            debugger;
             if (button.pressed && oldValue === 0) {
                 listener(...arguments);
             }

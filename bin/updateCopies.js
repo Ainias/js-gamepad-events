@@ -6,6 +6,8 @@ const ncp = require("ncp");
 const packageName = require("../package.json").name;
 
 let pathsToProjects = [
+    "C:\\Users\\Silas\\Projekte\\orgel"
+
     // "/home/silas/Projekte/Web/project-echo",
     // "/home/silas/Projekte/Web/wordRotator",
     // // "/home/silas/Projekte/Web/orgel",
@@ -89,7 +91,7 @@ execPromise("npm pack").then(async (std) => {
     process.chdir(thisPath);
     fs.unlinkSync(name);
     deleteFolderRecursive("tmp");
-    fs.unlinkSync("tmp");
+    // fs.unlinkSync("tmp");
 
     console.log("done!");
 }).catch(e => {
