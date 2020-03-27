@@ -104,10 +104,10 @@ class GamepadController {
     }
     //Specific listener functions
     static addButtonAxisListener(event, listener, gamepadIndex, buttonIndex) {
-        let realListener = (gamepad, index, value, oldValue, button) => {
+        let realListener = function (gamepad, index, value, oldValue, button) {
             if (Helper_1.Helper.isNull(gamepadIndex) || gamepad.index === gamepadIndex) {
                 if (Helper_1.Helper.isNull(buttonIndex) || index === buttonIndex) {
-                    listener(value, oldValue, button);
+                    listener(...arguments);
                 }
             }
         };
@@ -120,20 +120,21 @@ class GamepadController {
         return this.addButtonAxisListener("axischange", listener, gamepadIndex, axisIndex);
     }
     static addButtonDownListener(listener, gamepadIndex, buttonIndex) {
-        let realListener = (gamepad, index, value, oldValue, button) => {
+        let realListener = function (gamepad, index, value, oldValue, button) {
+            debugger;
             if (button.pressed && oldValue === 0) {
                 listener(...arguments);
             }
         };
-        return this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
+        return this.addButtonListener(realListener, gamepadIndex, buttonIndex);
     }
     static addButtonUpListener(listener, gamepadIndex, buttonIndex) {
-        let realListener = (gamepad, index, value, oldValue, button) => {
+        let realListener = function (gamepad, index, value, oldValue, button) {
             if (!button.pressed && oldValue > 0) {
                 listener(...arguments);
             }
         };
-        return this.addButtonAxisListener("buttonchange", realListener, gamepadIndex, buttonIndex);
+        return this.addButtonListener(realListener, gamepadIndex, buttonIndex);
     }
 }
 exports.GamepadController = GamepadController;

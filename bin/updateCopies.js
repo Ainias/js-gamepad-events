@@ -1,19 +1,20 @@
 const path = require("path");
 const exec = require('child_process').exec;
 const fs = require('fs');
+const ncp = require("ncp");
 
 const packageName = require("../package.json").name;
 
 let pathsToProjects = [
-    "/home/silas/Projekte/Web/project-echo",
-    "/home/silas/Projekte/Web/wordRotator",
-    // "/home/silas/Projekte/Web/orgel",
-    // "/home/silas/Projekte/Web/bible-lexicon",
+    // "/home/silas/Projekte/Web/project-echo",
     // "/home/silas/Projekte/Web/wordRotator",
-    "/home/silas/Projekte/Web/stories",
-    "/home/silas/Projekte/Web/cordova-sites-easy-sync",
-    "/home/silas/Projekte/Web/cordova-sites-user-management",
-    "/home/silas/Projekte/i9/mbb",
+    // // "/home/silas/Projekte/Web/orgel",
+    // // "/home/silas/Projekte/Web/bible-lexicon",
+    // // "/home/silas/Projekte/Web/wordRotator",
+    // "/home/silas/Projekte/Web/stories",
+    // "/home/silas/Projekte/Web/cordova-sites-easy-sync",
+    // "/home/silas/Projekte/Web/cordova-sites-user-management",
+    // "/home/silas/Projekte/i9/mbb",
     // "/var/www/pwa/wordRotator",
 
     // "/var/www/i9/mbb",
@@ -21,9 +22,9 @@ let pathsToProjects = [
     // "/home/silas/PhpstormProjects/project-echo",
 ];
 
-const deleteFolderRecursive = function(path) {
+const deleteFolderRecursive = function (path) {
     if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function(file, index){
+        fs.readdirSync(path).forEach(function (file, index) {
             let curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
                 deleteFolderRecursive(curPath);
@@ -71,7 +72,16 @@ execPromise("npm pack").then(async (std) => {
             if (!fs.existsSync(resultDir)) {
                 fs.mkdirSync(resultDir);
             }
-            return execPromise("cp -r ./* "+resultDir);
+
+            return new Promise((res, rej) => {
+                ncp(process.cwd(), resultDir, function (err) {
+                    if (err) {
+                        rej(err);
+                    }
+                    res();
+                });
+            });
+
         });
     });
     await promise;
@@ -79,7 +89,7 @@ execPromise("npm pack").then(async (std) => {
     process.chdir(thisPath);
     fs.unlinkSync(name);
     deleteFolderRecursive("tmp");
-    // fs.unlinkSync("tmp");
+    fs.unlinkSync("tmp");
 
     console.log("done!");
 }).catch(e => {

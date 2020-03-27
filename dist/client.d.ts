@@ -1,2 +1,2 @@
-export * from './GamepadController';
 export * from './client';
+export * from './GamepadController';
