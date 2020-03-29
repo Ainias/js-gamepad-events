@@ -44,8 +44,8 @@ export class GamepadController {
         }
     }
 
-    static _addGamepad(gamepad){
-        if (Helper.isNull(gamepad)){
+    static _addGamepad(gamepad) {
+        if (Helper.isNull(gamepad)) {
             return;
         }
 
@@ -84,7 +84,7 @@ export class GamepadController {
         });
 
         let gamepads = navigator.getGamepads();
-        for(let i = 0; i < gamepads.length; i++){
+        for (let i = 0; i < gamepads.length; i++) {
             this._addGamepad(gamepads[i]);
         }
 
@@ -97,7 +97,7 @@ export class GamepadController {
 
         let gamepads = navigator.getGamepads();
         for (let i = 0; i < gamepads.length; i++) {
-            if (gamepads[i]){
+            if (gamepads[i]) {
                 gamepadArray.push(gamepads[i])
             }
         }
@@ -133,7 +133,7 @@ export class GamepadController {
     }
 
     //loopFunction
-    static _loop(){
+    static _loop() {
         this.pollButtons();
         this.pollAxes();
 
@@ -141,10 +141,10 @@ export class GamepadController {
     }
 
     //Specific listener functions
-    static addButtonAxisListener(event, listener, gamepadIndex?, buttonIndex?){
-        let realListener = function(gamepad, index, value, oldValue, button) {
-            if (Helper.isNull(gamepadIndex) || gamepad.index === gamepadIndex){
-                if (Helper.isNull(buttonIndex) || index === buttonIndex){
+    static addButtonAxisListener(event, listener, gamepadIndex?, buttonIndex?) {
+        let realListener = function (gamepad, index, value, oldValue, button) {
+            if (Helper.isNull(gamepadIndex) || gamepad.index === gamepadIndex) {
+                if (Helper.isNull(buttonIndex) || index === buttonIndex) {
                     listener(...arguments);
                 }
             }
@@ -152,16 +152,17 @@ export class GamepadController {
         return this.on(event, realListener);
     }
 
-    static addButtonListener(listener, gamepadIndex?, buttonIndex?){
+    static addButtonListener(listener, gamepadIndex?, buttonIndex?) {
         return this.addButtonAxisListener("buttonchange", listener, gamepadIndex, buttonIndex);
     }
-    static addAxisListener(listener, gamepadIndex?, axisIndex?){
+
+    static addAxisListener(listener, gamepadIndex?, axisIndex?) {
         return this.addButtonAxisListener("axischange", listener, gamepadIndex, axisIndex);
     }
 
-    static addButtonDownListener(listener, gamepadIndex?, buttonIndex?){
-        let realListener = function(gamepad, index, value, oldValue, button) {
-            if (button.pressed && oldValue === 0){
+    static addButtonDownListener(listener, gamepadIndex?, buttonIndex?) {
+        let realListener = function (gamepad, index, value, oldValue, button) {
+            if (button.pressed && oldValue === 0) {
                 listener(...arguments);
             }
         };
@@ -169,14 +170,39 @@ export class GamepadController {
         return this.addButtonListener(realListener, gamepadIndex, buttonIndex);
     }
 
-    static addButtonUpListener(listener, gamepadIndex?, buttonIndex?){
-        let realListener = function(gamepad, index, value, oldValue, button) {
-            if (!button.pressed && oldValue > 0){
+    static addButtonUpListener(listener, gamepadIndex?, buttonIndex?) {
+        let realListener = function (gamepad, index, value, oldValue, button) {
+            if (!button.pressed && oldValue > 0) {
                 listener(...arguments);
             }
         };
 
-        return this.addButtonListener( realListener, gamepadIndex, buttonIndex);
+        return this.addButtonListener(realListener, gamepadIndex, buttonIndex);
     }
 
+    static addAxisDownListener(listener, gamepadIndex?, axisIndex?, threshold?) {
+        threshold = Helper.nonNull(threshold, 0.5);
+        let realListener = (gamepad, index, value, oldValue) => {
+            if (value >= threshold && oldValue < threshold) {
+                listener(gamepad, index, value, oldValue, 1);
+            }
+            else if (value <= -1*threshold && oldValue > -1*threshold){
+                listener(gamepad, index, value, oldValue, -1);
+            }
+        };
+        return this.addAxisListener(realListener, gamepadIndex, axisIndex);
+    }
+
+    static addAxisUpListener(listener, gamepadIndex?, axisIndex?, threshold?) {
+        threshold = Helper.nonNull(threshold, 0.5);
+        let realListener = (gamepad, index, value, oldValue) => {
+            if (value < threshold && oldValue >= threshold) {
+                listener(gamepad, index, value, oldValue, 1);
+            }
+            else if (value > -1 * threshold && oldValue <= -1 * threshold){
+                listener(gamepad, index, value, oldValue, -1);
+            }
+        };
+        return this.addAxisListener(realListener, gamepadIndex, axisIndex);
+    }
 }

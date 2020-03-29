@@ -143,6 +143,30 @@ class GamepadController {
         };
         return this.addButtonListener(realListener, gamepadIndex, buttonIndex);
     }
+    static addAxisDownListener(listener, gamepadIndex, axisIndex, threshold) {
+        threshold = Helper_1.Helper.nonNull(threshold, 0.5);
+        let realListener = (gamepad, index, value, oldValue) => {
+            if (value >= threshold && oldValue < threshold) {
+                listener(gamepad, index, value, oldValue, 1);
+            }
+            else if (value <= -1 * threshold && oldValue > -1 * threshold) {
+                listener(gamepad, index, value, oldValue, -1);
+            }
+        };
+        return this.addAxisListener(realListener, gamepadIndex, axisIndex);
+    }
+    static addAxisUpListener(listener, gamepadIndex, axisIndex, threshold) {
+        threshold = Helper_1.Helper.nonNull(threshold, 0.5);
+        let realListener = (gamepad, index, value, oldValue) => {
+            if (value < threshold && oldValue >= threshold) {
+                listener(gamepad, index, value, oldValue, 1);
+            }
+            else if (value > -1 * threshold && oldValue <= -1 * threshold) {
+                listener(gamepad, index, value, oldValue, -1);
+            }
+        };
+        return this.addAxisListener(realListener, gamepadIndex, axisIndex);
+    }
 }
 exports.GamepadController = GamepadController;
 GamepadController.EVENTS = ["connect", "disconnect", "buttonchange", "axischange"];

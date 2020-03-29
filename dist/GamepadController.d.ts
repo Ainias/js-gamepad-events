@@ -20,4 +20,6 @@ export declare class GamepadController {
     static addAxisListener(listener: any, gamepadIndex?: any, axisIndex?: any): any;
     static addButtonDownListener(listener: any, gamepadIndex?: any, buttonIndex?: any): any;
     static addButtonUpListener(listener: any, gamepadIndex?: any, buttonIndex?: any): any;
+    static addAxisDownListener(listener: any, gamepadIndex?: any, axisIndex?: any, threshold?: any): any;
+    static addAxisUpListener(listener: any, gamepadIndex?: any, axisIndex?: any, threshold?: any): any;
 }
